@@ -21,7 +21,7 @@ controller.list = (req, res) => {
      return res.status(200)
      .send({ 
         Cve_Error : 0,
-        Cve_Mensaje : {clientes},
+        Cve_Mensaje : clientes,
       });
 
     });
@@ -39,6 +39,7 @@ controller.new = (req, res) => {
           return res.status(500).send({ 
           Cve_Error : -1,
           Cve_Mensaje:'Hubo un problema en el servidor',
+          err
         })
       } else if (cliente.length > 0) {
         return res.status(500).send({ 
@@ -52,9 +53,10 @@ controller.new = (req, res) => {
               return res.status(500).send({ 
               Cve_Error : -1,
               Cve_Mensaje:'Hubo un problema en el servidor',
+              err
             })
           }else{
-            return res.status(500).send({ 
+            return res.status(200).send({ 
               Cve_Error : 0,
               Cve_Mensaje: 'El cliente se ha registrado de manera correcta',
             })
@@ -84,6 +86,7 @@ controller.update = (req, res) => {
           Cve_Mensaje: 'El cliente no se encuntra registrado'
         })
       }
+      
       req.getConnection((err, conn) => {
         conn.query('UPDATE cliente set ? where Cliente_ID = ?', [newCustomer, id], (err, rows) => {
           if (err) {
@@ -94,11 +97,10 @@ controller.update = (req, res) => {
           }
           return res.status(200).send({
             mesCve_Error : 0,
-            Cve_Mensaje:'Se han modificado los datos del cliente',
+            Cve_Mensaje:rows,
           })
 
         });
-    
       });
 
     })
